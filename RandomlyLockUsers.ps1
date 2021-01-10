@@ -50,18 +50,13 @@ process {
         Get-Random -InputObject $Users
         
     }
-
-    # create random password params
-    Add-Type -AssemblyName 'System.Web'
-    $pwLength = Get-Random -Minimum 25 -Maximum 30
-    $spcChars = 5
-    
+   
 
     foreach ($User in $SelectedUsers) {
 
         $username = "$NetBiosName\$($User.SamAccountName)"
-        $password = [System.Web.Security.Membership]::GeneratePassword($pwLength,$spcChars) | ConvertTo-SecureString -AsPlainText -Force
-        $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $username,$password
+        $badPassword = 'BadPa$$w0rd' | ConvertTo-SecureString -AsPlainText -Force
+        $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $username,$badPassword
 
         1..$LockoutThreshold | ForEach-Object {
 
@@ -76,6 +71,6 @@ process {
 
 end {
 
-    $SelectedUsers
+    $SelectedUsers | Get-ADUser -Properties LockedOut
 
 }
