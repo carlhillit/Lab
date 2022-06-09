@@ -1,4 +1,4 @@
-GivenName,SurName,EmployeeID,Role
+GivenName,SurName,EmployeeID,Department
 James,Smith,123001,Accounting
 Mary,Johnson,123002,Accounting
 John,Williams,123003,Accounting
