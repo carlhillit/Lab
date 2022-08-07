@@ -6,7 +6,7 @@
             "hostname": "nuc1.breakdown.lab",
             "username": "root",
             "password": "VMware1!",
-            "deployment_network": "VM Network",
+            "deployment_network": "HLVM",
             "datastore": "NAS"
         },
         "appliance": {

@@ -1,3 +1,4 @@
 Host,PortGroup,VDS,IPaddress,SubnetMask
-nuc1.breakdown.lab,DPortGroup,DSwitch,192.168.100.11,255.255.255.0
-nuc3.breakdown.lab,DPortGroup,DSwitch,192.168.100.13,255.255.255.0
+nuc1.breakdown.lab,PG-vMotion,VDS-vMotion,192.168.100.11,255.255.255.0
+nuc2.breakdown.lab,PG-vMotion,VDS-vMotion,192.168.100.12,255.255.255.0
+nuc3.breakdown.lab,PG-vMotion,VDS-vMotion,192.168.100.13,255.255.255.0

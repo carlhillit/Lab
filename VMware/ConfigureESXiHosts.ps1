@@ -1,7 +1,7 @@
 $esxiHosts = @(
-    'nuc1.breakdown.lab'
-    'nuc2.breakdown.lab'
-    'nuc3.breakdown.lab'
+    'host1.breakdown.lab'
+    'host2.breakdown.lab'
+    'host3.breakdown.lab'
 )
 
 $esxiPassword = 'VMware1!' | ConvertTo-SecureString -AsPlainText -Force
@@ -39,12 +39,10 @@ $VMHosts | ForEach-Object {
 
 
 # set vm network port group
-$VPG = 'VM Network'
+$VPG = 'HLVM'
 $vlan = 10
 
-Get-VirtualPortGroup -Name $VPG | Set-VirtualPortGroup -VLanId $vlan
-
-
+Get-VirtualSwitch -VMHost $VMHosts | New-VirtualPortGroup -Name $VPG -VLanId $vlan
 
 
 

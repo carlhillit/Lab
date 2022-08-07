@@ -27,6 +27,22 @@ Add-WindowsFeature AD-Domain-Services
 
 # add forest and make domain controller
 $DomainName = "karl.lab"
+$NetBiosName = "KARL"
 $adminpass =  Read-Host -AsSecureString
 
-Install-ADDSForest -InstallDns -DomainName $DomainName -DatabasePath "E:\NTDS" -LogPath "F:\Logs" -SafeModeAdministratorPassword $adminpass #-CreateDNSDelegation
+$ADDSparams = @{
+    CreateDnsDelegation = $false
+    DatabasePath  = "E:\NTDS"
+    DomainMode = "WinThreshold"
+    DomainName = $DomainName
+    DomainNetbiosName = $NetBiosName
+    ForestMode = "WinThreshold"
+    InstallDns = $true
+    LogPath = "F:\LOGS"
+    NoRebootOnCompletion = $false
+    SysvolPath = "C:\Windows\SYSVOL"
+    SafeModeAdministratorPassword = $adminpass
+    Force = $true
+}
+
+Install-ADDSForest @ADDSparams
