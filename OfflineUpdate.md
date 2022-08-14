@@ -24,8 +24,13 @@ now community edition
 
 # Linux
 
-## RHEL / Rocky
+## RHEL / Rocky / Alma
+### Reposync
 
+### Rsync
+
+
+### Individual Patches
 
 ## Ubuntu
 
