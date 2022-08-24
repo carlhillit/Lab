@@ -1,18 +1,12 @@
-#region vCenter deploy
-
-/Volumes/VMware\ VCSA/vcsa-cli-installer/mac/vcsa-deploy install --accept-eula --log-dir /Users/karl/homelab --no-ssl-certificate-verification /Users/karl/Lab/VMware/embedded_vCSA_on_ESXi.json
-
-#endregion vCenter deploy
-
 #region variables & connection
 
 $vCenter = 'vcsa.breakdown.lab'
 
-$vcsaPassword = 'VMware1!' | ConvertTo-SecureString -AsPlainText -Force
+$vcsaPassword = Read-Host -Prompt 'Enter the vSphere admin password' -AsSecureString
 $vcsaCreds = New-Object System.Management.Automation.PSCredential ('administrator@vsphere.local', $vcsaPassword)
 
 #esxi hosts
-$esxiPassword = 'VMware1!' | ConvertTo-SecureString -AsPlainText -Force
+$esxiPassword = Read-Host -Prompt 'Enter the ESXi root password' -AsSecureString
 $esxiCreds = New-Object System.Management.Automation.PSCredential ('root', $esxiPassword)
 
 $esxiHosts = @(
