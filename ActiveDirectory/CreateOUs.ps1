@@ -1,23 +1,13 @@
 
-$domain = "DC=blue,DC=breakdown,DC=lab"
-$BaseOU = ="BDLAB"
+$domain = "DC=blue,DC=karl,DC=lab"
+$BaseOU = "HOMELAB"
 
 $OUnames = @(
-"Computers"
-"Users"
-"Admins"
-"Servers")
-
-
-New-ADOrganizationalUnit `
--Name "TFS Labs" -Path "DC=corp,DC=tfslabs,DC=com"
-New-ADOrganizationalUnit `
--Name "TFS Servers" -Path "OU=TFS Labs,DC=corp,DC=tfslabs,DC=com"
-New-ADOrganizationalUnit `
--Name "TFS Users" -Path "OU=TFS Labs,DC=corp,DC=tfslabs,DC=com"
-New-ADOrganizationalUnit `
--Name "TFS Workstations" -Path "OU=TFS Labs,DC=corp,DC=tfslabs,DC=com"
-
+    "Computers"
+    "Users"
+    "Admins"
+    "Servers"
+)
 
 New-ADOrganizationalUnit -Name $BaseOU -Path $domain -ProtectedFromAccidentalDeletion $true
 
