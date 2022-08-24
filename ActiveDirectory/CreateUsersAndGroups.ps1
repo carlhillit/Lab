@@ -1,8 +1,9 @@
-$Domain = 'breakdown.lab'
-$UsersCsv = Import-Csv -Path C:\scripts\LabSetup\50CommonNames-EN.csv
-$UsersOU = "OU=Users,OU=LAB,DC=breakdown,DC=lab"
-$GroupsOU = "OU=Groups,OU=LAB,DC=breakdown,DC=lab"
+$Domain = 'karl.lab'
+$UsersCsv = Import-Csv -Path .\50CommonNames-EN.csv
+$UsersOU = "OU=Users,OU=HOMELAB,DC=karl,DC=lab"
+$GroupsOU = "OU=Groups,OU=HOMELAB,DC=karl,DC=lab"
 
+$DefaultUserPassword = Read-Host -Prompt 'Enter the default user password' | ConvertTo-SecureString -AsPlainText -Force
 
 foreach ($user in $UsersCsv) {
     $splat = @{
@@ -14,7 +15,7 @@ foreach ($user in $UsersCsv) {
         Surname = $user.Surname
         Description = $user.Role
         Enabled = $true
-        AccountPassword = 'P@$$w0rd123!@#' | ConvertTo-SecureString -AsPlainText -Force
+        AccountPassword = $DefaultUserPassword
     }
     New-ADUser @splat
 }
