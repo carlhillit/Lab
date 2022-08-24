@@ -1,3 +1,15 @@
+<#
+.SYNOPSIS
+    Locks randomly selected Active Directory accounts in bulk.
+.DESCRIPTION
+    Intentionally locks a specified number of Active Directory users selected at random, or locks a percentage of all Active Directory users chosen at random.
+.NOTES
+    Used to expiriment with large number of locked user accounts. It is intened for use in a testing environment.
+.EXAMPLE
+    RandomlyLockUsers.ps1 -NumbertoLock 10 -LockoutThreshold 3 -OrganizationalUnit 'OU=Users,OU=LAB,DC=breakdown,DC=lab'
+    RandomlyLockUsers.ps1 -PercentToLock 20 -LockoutThreshold 3 -OrganizationalUnit 'OU=Users,OU=LAB,DC=breakdown,DC=lab'
+#>
+
 [CmdletBinding()]
 param (
 
@@ -19,7 +31,7 @@ param (
     # Organizational Unit to search for users to lock out
     [Parameter()]
     [Microsoft.ActiveDirectory.Management.ADOrganizationalUnit]
-    $OrganizationalUnit = 'OU=Users,OU=LAB,DC=breakdown,DC=lab'
+    $OrganizationalUnit
 )
 
 
