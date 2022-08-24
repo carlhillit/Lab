@@ -7,6 +7,7 @@
 .NOTES
     Invoke-VMScript from VMware.PowerCLI module is not fully supported on PowerShell Core / PowerShell version 7
     Upon Install of AD Forest, error is thrown: "A general system error occurred: vix error codes", but the AD forest seems to install successfully.
+    Must be connect to vSphere server or ESXi host.
 .EXAMPLE
     Test-MyTestFunction -Verbose
     Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
