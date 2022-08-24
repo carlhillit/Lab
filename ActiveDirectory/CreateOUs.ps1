@@ -1,5 +1,5 @@
 
-$domain = "DC=blue,DC=karl,DC=lab"
+$domain = "DC=karl,DC=lab"
 $BaseOU = "HOMELAB"
 
 $OUnames = @(
@@ -7,10 +7,11 @@ $OUnames = @(
     "Users"
     "Admins"
     "Servers"
+    "Groups"
 )
 
 New-ADOrganizationalUnit -Name $BaseOU -Path $domain -ProtectedFromAccidentalDeletion $true
 
 $OUnames | ForEach-Object{
-    New-ADOrganizationalUnit -Name $_ -Path "DC=$BaseOU,$domain" -ProtectedFromAccidentalDeletion $true
+    New-ADOrganizationalUnit -Name $_ -Path "OU=$BaseOU,$domain" -ProtectedFromAccidentalDeletion $true
 }
