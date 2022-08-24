@@ -5,7 +5,8 @@
 .DESCRIPTION
     Invokes the necessary commands to provision a Windows VM in VMware ESXi or vSphere, into a domain controller.
 .NOTES
-    Information or caveats about the function e.g. 'This function is not supported in Linux'
+    Invoke-VMScript from VMware.PowerCLI module is not fully supported on PowerShell Core / PowerShell version 7
+    Upon Install of AD Forest, error is thrown: "A general system error occurred: vix error codes", but the AD forest seems to install successfully.
 .EXAMPLE
     Test-MyTestFunction -Verbose
     Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
@@ -13,8 +14,12 @@
 [CmdletBinding()]
 param (
     [Parameter()]
-    [string]
+    [VirtualMachine]
     $VM,
+
+    [Parameter()]
+    [PSCredential]
+    $GuestCredential,
     
     [Parameter()]
     [string]
@@ -39,52 +44,54 @@ param (
 
     [Parameter()]
     [securestring]
-    $AdminPass
+    $SafeModeAdministratorPassword
 
 )
 
 
-Invoke-VMScript -VM $VM -ScriptText {
+# set ip address, netmask, gateway, dns server
+$Phase1Text = @"
 
-    # set ip address, netmask, gateway, dns server
-    New-NetIPAddress -InterfaceIndex 2 -IPAddress $using:IPAddress -PrefixLength $using:SubnetLength -DefaultGateway $using:DefaultGateway
-    Set-DnsClientServerAddress -InterfaceIndex 2 -ServerAddresses $using:IPAddress
+    New-NetIPAddress -InterfaceAlias "Ethernet0" -IPAddress $IPAddress -PrefixLength $SubnetLength -DefaultGateway $DefaultGateway
+    Set-DnsClientServerAddress -InterfaceAlias "Ethernet0" -ServerAddresses $IPAddress
 
-    # add & foramt disks
     Get-Disk -Number 1 | Initialize-Disk -PartitionStyle GPT -PassThru | New-Volume -FileSystem NTFS -DriveLetter E -FriendlyName 'NTDS'
+    Get-Disk -Number 2 | Initialize-Disk -PartitionStyle GPT -PassThru | New-Volume -FileSystem NTFS -DriveLetter F -FriendlyName 'LOGS'
 
-    Get-Disk -Number 2 | Initialize-Disk -PartitionStyle GPT -PassThru | New-Volume -FileSystem Logs -DriveLetter F -FriendlyName 'LOGS'
+    Rename-Computer -NewName DC
+
+"@
 
 
-    #initial server config
-    Rename-Computer -NewName DC -Restart:$false
+Invoke-VMScript -VM $VM -GuestCredential $GuestCredential -ScriptType Powershell -ScriptText $Phase1Text
 
-}
+Restart-VMGuest -VM $VM
 
-Get-VM $VM | Restart-VMGuest
+$parvar = '$params'
+$truevar = '$true'
+$falsevar = '$false'
 
-Invoke-VMScript -VM $VM -ScriptText {
-    # install AD domain services
+$Phase2Text = @"
+
     Add-WindowsFeature AD-Domain-Services
 
-
-    # add forest and make domain controller
-
-    $ADDSparams = @{
-        CreateDnsDelegation = $false
-        DatabasePath  = "E:\NTDS"
-        DomainMode = "WinThreshold"
-        DomainName = $DomainName
-        DomainNetbiosName = $NetBiosName
-        ForestMode = "WinThreshold"
-        InstallDns = $true
+    $parvar = @{
+        CreateDnsDelegation = $falsevar
+        DatabasePath = "E:\NTDS"
+        DomainName = "$DomainName"
+        DomainNetbiosName = "$NetBiosName"
+        InstallDns = $truevar
         LogPath = "F:\LOGS"
-        NoRebootOnCompletion = $false
         SysvolPath = "C:\Windows\SYSVOL"
-        SafeModeAdministratorPassword = $adminpass
-        Force = $true
+        SafeModeAdministratorPassword = ('$SafeModeAdministratorPassword' | ConvertTo-SecureString -AsPlainText -Force)
+        Confirm = $falsevar
+        NoRebootOnCompletion = $truevar
     }
 
-    Install-ADDSForest @ADDSparams
+    Install-ADDSForest @params
 
-}
+"@
+
+Invoke-VMScript -VM $VM -GuestCredential $GuestCredential -ScriptType Powershell -ScriptText $Phase2Text
+
+Restart-VMGuest -VM $VM
