@@ -4,7 +4,7 @@ $esxiHosts = @(
     'host3.breakdown.lab'
 )
 
-$esxiPassword = 'VMware1!' | ConvertTo-SecureString -AsPlainText -Force
+$esxiPassword = Read-Host -Prompt 'Enter the ESXi root password' -AsSecureString
 $esxiCreds = New-Object System.Management.Automation.PSCredential ('root', $esxiPassword)
 
 
@@ -27,14 +27,6 @@ $enabledServices = @(
 $enabledServices | ForEach-Object {
     Get-VMHostService -VMHost $VMHosts | Where-Object -Property Key -eq $_ | Start-VMHostService # start service
     Get-VMHostService -VMHost $VMHosts | Where-Object -Property Key -eq $_ | Set-VMHostService -Policy On # enable service to start upon boot
-}
-
-# mount NAS NFS datastore
-$nfsServer = '192.168.178.30'
-$nfsShare = '/vmware'
-
-$VMHosts | ForEach-Object {
-    New-Datastore -VMHost $_ -Name NAS -Nfs -NfsHost $nfsServer -Path $nfsShare -FileSystemVersion 4.1
 }
 
 
