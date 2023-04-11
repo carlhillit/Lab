@@ -6,7 +6,7 @@
 esxcli system maintenanceMode set --enable=true
 
 # allow firewall acces
-esxcli network firewall ruleset set --enable=true --ruleset-id=httpClient
+esxcli network firewall ruleset set --enabled=true --ruleset-id=httpClient
 
 # grab latest esxi version
 newversion=$(esxcli software sources profile list --depot=https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml | grep standard | tail -1 | awk '{ print $1 }')
