@@ -12,7 +12,7 @@ esxcli network firewall ruleset set --enabled=true --ruleset-id=httpClient
 newversion=$(esxcli software sources profile list --depot=https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml | grep standard | tail -1 | awk '{ print $1 }')
 
 # perform update
-esxcli software profile update --depot=https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml --profile=$newversion 
+esxcli software profile update --depot=https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml --profile=$newversion --no-hardware-warning
 
 # set firewall back
 esxcli network firewall ruleset set -enable=false --=ruleset-id=httpClient
