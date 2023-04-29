@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 # if the system is connected to the internet, it will find the latest version of ESXi and upgrade to it
 
@@ -15,7 +15,7 @@ newversion=$(esxcli software sources profile list --depot=https://hostupdate.vmw
 esxcli software profile update --depot=https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml --profile=$newversion --no-hardware-warning
 
 # set firewall back
-esxcli network firewall ruleset set -enable=false --=ruleset-id=httpClient
+esxcli network firewall ruleset set --enable=false --ruleset-id=httpClient
 
 # reboot
 esxcli system shutdown reboot --reason="updated to $newversion"
